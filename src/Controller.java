@@ -1,9 +1,5 @@
 package lostinpandora;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,52 +7,62 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.Scanner;
-import java.util.Set;
 
 
 public class Controller {
 	static String input;
 	static Scanner scanStr = new Scanner(System.in); //new Scanner to scan input.
-	static HashMap<String, String> helplist = new HashMap<String, String>(); //holds the list of commands
 	static GameMap map = new GameMap();
 	static int currentroomno = 0;
 	static String startMsg = "**********" + "\n" + "You have been kidnapped and left in an abandoned building. "
 							+ "\n" + "Somehow you found a way to untie yourself. You have to find 7 sub-maps tagged "
 							+ "P,A,N,D,O,R,A to get out of the building. "
 							+ "\n" + "Find all submaps before the kidnappers return in 10 minutes" + "\n" + "**********";
+	static Rooms currentroom;
+	static long startTime,queryTime,timeSpent,timeLeft;
+	static String timetoPrint;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		welcomeMsg();
 	}
 	
+	//print time left.
+	public static void checkTime() {
+		queryTime = System.currentTimeMillis();
+		timeSpent = ((queryTime - startTime));
+		timeLeft = 600000 - timeSpent;
+		timetoPrint = String.format("%02d min, %02d sec", TimeUnit.MILLISECONDS.toMinutes(timeLeft)
+				,TimeUnit.MILLISECONDS.toSeconds(timeLeft) - 
+			    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeLeft)));
+		System.out.println("You have " + timetoPrint + " left!");
+		ingameInput();
+	}
+	
 	//handles event for the current room.
-		public static void currentRoom() {
-			Rooms currentroom = map.getRoom(currentroomno);
-			System.out.println("You are in "+ currentroom.name);
-			System.out.println(currentroom.description);
-			ingameInput();
-		}
+	public static void currentRoom() {
+		currentroom = map.getRoom(currentroomno);
+		System.out.println("You are in "+ currentroom.name);
+		System.out.println(currentroom.description);
+		ingameInput();
+	}
 		
 		
 	//executes when the player's time elapses
 	public static void endGame() {
-		System.out.println("\n"+"**********You have been caught by the kidnappers again. Game ended!**********");
+		System.out.println("\n"+"**********Sorry, You have been caught by the kidnappers again. Game ended!**********");
 		System.exit(0); //end the entire program.
 	}
 	
-	//fills the hashmap with the commands + description and pulls out the list
+	//prints out all possible commands
 	public static void help() {
-		helplist.put("quit","quits the game");
-		 
-		//iterates over the Hashmap and prints out a formatted content.
-		Set<Entry<String, String>> set = helplist.entrySet();
-		    Iterator<Entry<String, String>> it = set.iterator();
-		    while (it.hasNext()) {
-		      @SuppressWarnings("rawtypes")
-			Map.Entry entry = (Map.Entry) it.next();
-		      System.out.println(entry.getKey() + " - " + entry.getValue());
-		    }
+		System.out.println("describe - describes current room");
+		System.out.println("exit east - exit current building to the room on the east");
+		System.out.println("exit north - exit current building to the room on the north");
+		System.out.println("exit south - exit current building to the room on the south");
+		System.out.println("exit west - exit current building to the room on the west");
+		System.out.println("quit - quits the game");
+		System.out.println("timeleft - check how much time you have left");
 		ingameInput();
 	}
 	
@@ -65,17 +71,89 @@ public class Controller {
 		System.out.print("Player> ");
 		input = scanStr.nextLine().toLowerCase(); //input holds the value of the players input
 		
-		if (input.equals("quit")) {
-			terminate();
+		if (input.equals("describe")) {
+			System.out.println(currentroom.description);
+			ingameInput();
+		}
+		else if (input.equals("exit east")) {
+			moveplayerEast();
+		}
+		else if (input.equals("exit north")) {
+			moveplayerNorth();
+		}
+		else if (input.equals("exit south")) {
+			moveplayerSouth();
+		}
+		else if (input.equals("exit west")) {
+			moveplayerWest();
 		}
 		else if (input.equals("help")) {
 			help();
+		}
+		else if (input.equals("quit")) {
+			terminate();
+		}
+		else if (input.equals("timeleft")) {
+			checkTime();
 		}
 		else {
 			System.out.println("Command not recognized! Rely on the 'help' command." );
 			ingameInput();
 		}
 	}
+	
+	//moves player to the east exit of current room
+	public static void moveplayerEast() {
+		currentroomno = currentroom.exitEast;
+		if (currentroomno == 0) {
+			System.out.println("There is no exit in that direction");
+			ingameInput();
+		}
+		else {
+			currentroomno--;
+			currentRoom();
+		}	
+	}
+	
+	//moves player to the north exit of current room
+	public static void moveplayerNorth() {
+		currentroomno = currentroom.exitNorth;
+		if (currentroomno == 0) {
+			System.out.println("There is no exit in that direction");
+			ingameInput();
+		}
+		else {
+			currentroomno--;
+			currentRoom();
+		}
+	}
+	
+	//moves player to the south exit of current room
+	public static void moveplayerSouth() {
+		currentroomno = currentroom.exitSouth;
+		if (currentroomno == 0) {
+			System.out.println("There is no exit in that direction");
+			ingameInput();
+		}
+		else {
+			currentroomno--;
+			currentRoom();
+		}	
+	}
+	
+	//moves player to the west exit of current room
+	public static void moveplayerWest() {
+		currentroomno = currentroom.exitWest;
+		if (currentroomno == 0) {
+			System.out.println("There is no exit in that direction");
+			ingameInput();
+		}
+		else {
+			currentroomno--;
+			currentRoom();
+		}	
+	}
+	
 	
 	//method accepting player's input before the game begins.
 		public static void prebeginInput() {
@@ -101,6 +179,7 @@ public class Controller {
 			public void run() { 
 				System.out.println(startMsg);
 				map.createRooms();
+				startTime = System.currentTimeMillis();
 				currentRoom();	
 			}
 		};
@@ -115,7 +194,7 @@ public class Controller {
 		}
 		catch (ExecutionException ExecutionException) { 
 		}
-		catch (InterruptedException InterruptedException) { 
+		catch (InterruptedException InterruptedException) {
 		}
 		catch (TimeoutException TimeoutException) { 
 			endGame(); 
@@ -132,7 +211,7 @@ public class Controller {
 	
 	//Prints Game's welcome message
 	public static void welcomeMsg() {
-		System.out.println("**********Lost in Pandora**********" +"\n" +
+		System.out.println("**********Welcome to the Lost in Pandora Game**********" +"\n" +
 		"Type “start” to begin or “quit” to terminate");
 		prebeginInput();
 	}
