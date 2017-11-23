@@ -74,7 +74,7 @@ public class GameMap {
 		return allRooms.get(currentroomno);
 	}
 	
-	public static void getSubmap(Rooms currentroom) {
+	public void getSubmap(Rooms currentroom) {
 		if (currentroom.hasSubmap.equals(true)) {
 			String submapgotten = roomsubmaps.get(currentroom);
 			System.out.println("Submap <" + submapgotten + "> has been added to your inventory");
