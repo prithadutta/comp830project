@@ -30,7 +30,7 @@ public class Controller {
 	//print time left.
 	public static void checkTime() {
 		queryTime = System.currentTimeMillis();
-		timeSpent = ((queryTime - startTime));
+		timeSpent = (queryTime - startTime);
 		timeLeft = 600000 - timeSpent;
 		timetoPrint = String.format("%02d min, %02d sec", TimeUnit.MILLISECONDS.toMinutes(timeLeft)
 				,TimeUnit.MILLISECONDS.toSeconds(timeLeft) - 
@@ -56,13 +56,18 @@ public class Controller {
 	
 	//prints out all possible commands
 	public static void help() {
+		System.out.println("\t"+"******************************Help List******************************");
 		System.out.println("describe - describes current room");
 		System.out.println("exit east - exit current building to the room on the east");
 		System.out.println("exit north - exit current building to the room on the north");
 		System.out.println("exit south - exit current building to the room on the south");
 		System.out.println("exit west - exit current building to the room on the west");
+		System.out.println("my submaps - prints your collected submaps");
+		System.out.println("pick submap - add a submap to inventory");
 		System.out.println("quit - quits the game");
+		System.out.println("scan - scans room for submap");
 		System.out.println("timeleft - check how much time you have left");
+		System.out.println("\t"+"***************************End of Help List***************************");
 		ingameInput();
 	}
 	
@@ -90,8 +95,19 @@ public class Controller {
 		else if (input.equals("help")) {
 			help();
 		}
+		else if (input.equals("my submaps")) {
+			Submaps.printInventory();
+			ingameInput();
+		}
+		else if (input.equals("pick submap")) {
+			GameMap.getSubmap(currentroom);
+			ingameInput();
+		}
 		else if (input.equals("quit")) {
 			terminate();
+		}
+		else if (input.equals("scan")) {
+			scanRoom();
 		}
 		else if (input.equals("timeleft")) {
 			checkTime();
@@ -172,6 +188,21 @@ public class Controller {
 			}
 		}
 		
+		
+	public static void scanRoom() {
+		if (currentroom.hasSubmap.equals(true)) {
+			System.out.println("Submap found!");
+		}
+		else if (currentroom.hasExit.equals(true)) {
+			System.out.println("Hidden Exit found!");
+		}
+		else {
+			System.out.println("Empty Room!");
+		}	
+		ingameInput();
+	}
+		
+	
 	//method to start game
 	public static void startGame() {
 		final Runnable startGameThread = new Thread() {
@@ -211,7 +242,7 @@ public class Controller {
 	
 	//Prints Game's welcome message
 	public static void welcomeMsg() {
-		System.out.println("**********Welcome to the Lost in Pandora Game**********" +"\n" +
+		System.out.println("\t"+"**********Welcome to the Lost in Pandora Game**********" +"\n" +
 		"Type “start” to begin or “quit” to terminate");
 		prebeginInput();
 	}
