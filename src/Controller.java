@@ -100,7 +100,7 @@ public class Controller {
 			ingameInput();
 		}
 		else if (input.equals("pick submap")) {
-			GameMap.getSubmap(currentroom);
+			map.getSubmap(currentroom);
 			ingameInput();
 		}
 		else if (input.equals("quit")) {
