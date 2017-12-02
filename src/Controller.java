@@ -58,6 +58,7 @@ public class Controller {
 	public static void help() {
 		System.out.println("\t"+"******************************Help List******************************");
 		System.out.println("describe - describes current room");
+		System.out.println("exit - leave the building");
 		System.out.println("exit east - exit current building to the room on the east");
 		System.out.println("exit north - exit current building to the room on the north");
 		System.out.println("exit south - exit current building to the room on the south");
@@ -67,6 +68,7 @@ public class Controller {
 		System.out.println("quit - quits the game");
 		System.out.println("scan - scans room for submap");
 		System.out.println("timeleft - check how much time you have left");
+		System.out.println("use map - reference the map of the bulding");
 		System.out.println("\t"+"***************************End of Help List***************************");
 		ingameInput();
 	}
@@ -79,6 +81,9 @@ public class Controller {
 		if (input.equals("describe")) {
 			System.out.println(currentroom.description);
 			ingameInput();
+		}
+		else if (input.equals("exit")) {
+			map.exitBulding(currentroom);
 		}
 		else if (input.equals("exit east")) {
 			moveplayerEast();
@@ -111,6 +116,10 @@ public class Controller {
 		}
 		else if (input.equals("timeleft")) {
 			checkTime();
+		}
+		else if (input.equals("use map")) {
+			map.validateMapprint();
+			ingameInput();
 		}
 		else {
 			System.out.println("Command not recognized! Rely on the 'help' command." );
