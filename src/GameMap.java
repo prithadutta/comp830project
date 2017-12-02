@@ -13,7 +13,7 @@ public class GameMap {
 	static Rooms P03 = new Rooms("Room P03","This is a room which has exits to room"
 			+ " P13 on the South and P02 on the West",0,6,2,0,false);
 	static Rooms P11 = new Rooms("Room P11","This is a room which has exits to room"
-			+ " P01 on the North, P21 on the South and P12 on the West",1,7,0,5,true);
+			+ " P01 on the North, P21 on the South and P12 on the East",1,7,0,5,true);
 	static Rooms P12 = new Rooms("Room P12","This is a room which has exits to room"
 			+ " P02 on the North, P22 on the South and P11 on the West and P13 on the East",2,8,4,6,false);
 	static Rooms P13 = new Rooms("Room P13","This is a room which has exits to room"
@@ -37,7 +37,7 @@ public class GameMap {
 	Submaps O = new Submaps("O");
 	Submaps R = new Submaps("R");
 	Submaps A2 = new Submaps("A");
-	
+	static Boolean foundexit = false;
 
 	public GameMap(){
 		allRooms = new ArrayList<Rooms>();
@@ -63,10 +63,23 @@ public class GameMap {
 		roomsubmaps.put(P22, O.name);
 		roomsubmaps.put(P31, R.name);
 		roomsubmaps.put(P33, A2.name);
-		
+	}
+	
+	public void exitBulding(Rooms currentroom) {
+		if (currentroom.hasExit.equals(true)) {
+			System.out.println("You are now out of Pandora");
+			System.out.println("\t"+"******************************Congratlations! You Won!!******************************");
+			System.out.println("\t"+"************************************Game Ended!!!************************************");
+			System.exit(0);
+		}
+		else {
+			System.out.println("No exit here");
+			Controller.ingameInput();
+		}
 	}
 	
 	public static void showhiddendoor() {
+		foundexit = true;
 		P13.hasExit = true;
 	}
 	
@@ -107,5 +120,14 @@ public class GameMap {
             System.out.println();
 	}
 	    System.out.println("\t"+"**************************End of Pandora Blueprint**************************");
+	}
+	
+	public void validateMapprint(){
+		if (foundexit.equals(true)) {
+			printMap();
+		}
+		else {
+			System.out.println("You don't have a map to use");
+		}
 	}
 }
