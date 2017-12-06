@@ -242,6 +242,14 @@ public class Controller {
 		if (!myExecutor.isTerminated())
 			myExecutor.shutdownNow();
 	}
+	public static void score()
+	{
+		long queryTime = System.currentTimeMillis();
+		long timeSpent = (queryTime - startTime);
+		long timeLeft = 600000 - timeSpent;
+		long score= timeLeft/60000;
+		System.out.println("\t"+"Your score is "+score);
+	}
 	
 	//method to quit game by closing the scanner so player can't input text
 	public static void terminate() {
