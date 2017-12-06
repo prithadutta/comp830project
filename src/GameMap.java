@@ -69,6 +69,7 @@ public class GameMap {
 		if (currentroom.hasExit.equals(true)) {
 			System.out.println("You are now out of Pandora");
 			System.out.println("\t"+"******************************Congratlations! You Won!!******************************");
+			Controller.score();
 			System.out.println("\t"+"************************************Game Ended!!!************************************");
 			System.exit(0);
 		}
